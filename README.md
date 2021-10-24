@@ -7,7 +7,7 @@
   <h1 align="center">Tag Machine</h3>
 
   <p align="center">
-    A little python application to auto tag your photos with the power of machine learning.
+    A little Python application to auto tag your photos with the power of machine learning.
     <br />
     <a href="https://github.com/torresflo/Tag-Machine/issues">Report a bug or request a feature</a>
   </p>
