@@ -5,7 +5,7 @@ from PIL import Image
 from iptcinfo3 import IPTCInfo
 from PySide6 import QtCore, QtWidgets, QtGui
 
-from ClassRules import ClassInformation, ClassRules
+from Model.ClassRules import ClassInformation, ClassRules
 from UI.PredictionItemModel import PredictionItemModel
 
 class MainWindow(QtWidgets.QWidget):

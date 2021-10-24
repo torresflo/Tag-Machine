@@ -27,7 +27,7 @@ class ClassRules:
         self.m_minimumThreshold = 30.0
 
         self.m_executionPath = os.getcwd()
-        jsonFile = QtCore.QFile(os.path.join(self.m_executionPath, "Models/imagenet_class_rules.json"))
+        jsonFile = QtCore.QFile(os.path.join(self.m_executionPath, "Model/imagenet_class_rules.json"))
         jsonFile.open(QtCore.QIODevice.ReadOnly)
         jsonData = jsonFile.readAll()
         
