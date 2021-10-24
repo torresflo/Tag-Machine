@@ -6,6 +6,7 @@ from iptcinfo3 import IPTCInfo
 from PySide6 import QtCore, QtWidgets, QtGui
 
 from ClassRules import ClassInformation, ClassRules
+from UI.PredictionItemModel import PredictionItemModel
 
 class MainWindow(QtWidgets.QWidget):
     def __init__(self, parent=None):
@@ -21,17 +22,19 @@ class MainWindow(QtWidgets.QWidget):
         self.m_classRules = ClassRules()
 
         # UI
-        self.m_loadFileButton = QtWidgets.QPushButton("Load file...")
-        self.m_classifyImageButton = QtWidgets.QPushButton("Classify image")
+        self.m_loadFileButton = QtWidgets.QPushButton("Load files...")
+        self.m_classifyImageButton = QtWidgets.QPushButton("Classify images")
         self.m_writeTagsButton = QtWidgets.QPushButton("Write tags in images")
-        self.m_fileNamesPlainTextEdit = QtWidgets.QPlainTextEdit("No file loaded...")
-        self.m_resultPlainTextEdit = QtWidgets.QPlainTextEdit("No data yet...")
+        self.m_fileNamesPlainTextEdit = QtWidgets.QPlainTextEdit("No files loaded...")
+
+        self.m_resultTable = QtWidgets.QTableView()
+        self.m_resultTable.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
 
         self.layout = QtWidgets.QVBoxLayout(self)
         self.layout.addWidget(self.m_loadFileButton)
         self.layout.addWidget(self.m_fileNamesPlainTextEdit)
         self.layout.addWidget(self.m_classifyImageButton)
-        self.layout.addWidget(self.m_resultPlainTextEdit)
+        self.layout.addWidget(self.m_resultTable)
         self.layout.addWidget(self.m_writeTagsButton)
 
         self.m_loadFileButton.clicked.connect(self.onLoadFileButtonClicked)
@@ -52,35 +55,25 @@ class MainWindow(QtWidgets.QWidget):
         self.m_predictions = []
 
         for fileName in self.m_fileNames:
-            imageClassificationString = ""
-
-            fileNameWithouPathString = QtCore.QFileInfo(fileName).fileName()
             image = Image.open(fileName)
             inputs = self.m_featureExtractor(images=image, return_tensors="pt")
             outputs = self.m_model(**inputs)
             logits = outputs.logits
             
             predictedClass = logits.argmax().item()
-            predictionProbability = logits.softmax(dim=1).max().item()
+            predictionProbability = logits.softmax(dim=1).max().item() * 100.0
 
             classNames = self.m_model.config.id2label[predictedClass]
             className = classNames.split(",")[0]
 
             if self.m_classRules.isPredictionValid(className, predictionProbability):
                 information =  self.m_classRules.getClassInformation(className)
-                self.m_predictions.append([fileName, information])
+                self.m_predictions.append([fileName, information, predictionProbability])
 
-                imageClassificationString += fileNameWithouPathString + ' -> ' + className + ' = ' + information.m_label
-                if information.m_categories:
-                    imageClassificationString += str(information.m_categories)
-                imageClassificationString += ' (' + "{:4.2f}".format(predictionProbability * 100) + '%)\n'
-
-            if imageClassificationString == "":
-                resultString += fileNameWithouPathString + " : Nothing usefull found...\n"
-            else:
-                resultString += imageClassificationString
-
-        self.m_resultPlainTextEdit.setPlainText(resultString)
+        if(len(self.m_predictions) > 0):
+            self.m_resultTable.setModel(PredictionItemModel(self.m_predictions))
+        else:
+            self.m_resultTable.setModel(QtGui.QStandardItemModel(0, 0))
 
     @QtCore.Slot()
     def onWriteTagsButtonClicked(self):

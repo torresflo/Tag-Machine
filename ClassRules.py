@@ -17,7 +17,7 @@ class ClassInformation:
         if "priority" in jsonValue.keys():
             self.m_priority = jsonValue["priority"]
         if "threshold" in jsonValue.keys():
-            self.m_threshold = jsonValue["threshold"]
+            self.m_threshold = jsonValue["threshold"] * 100.0
         if "categories" in jsonValue.keys():
             self.m_categories = jsonValue["categories"]
 
