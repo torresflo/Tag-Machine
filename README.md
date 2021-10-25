@@ -61,9 +61,11 @@ Follow the instructions above then clone the repo (`git clone https:://github.co
 
 ## Usage
 
-Press the button `Load files...` to load your images then press the button `Classify images` to start the classifier. Depending on your machine hardware and the number of images this can take some time.
+Press the button `Load files...` to load your images then press the button `Classify images` to start the classifier. Depending on your machine hardware and the number of images this can take some (and eventually a lot of) time.
 
-The results are loaded in a table below so you can see which tags are detected.
+The results are loaded in a table below so you can see which tags are detected for each image.
+
+If you are satisfied with the results, you can then press the button `Write tags in images` to write the found tags in the metadata of the image (IPTC, IIM Application 2, Keywords). Each tag is appended to the existing ones and will not be written if it already exists.
 
 ![Example image](https://github.com/torresflo/Tag-Machine/blob/main/Photos/Example1.png)
 
