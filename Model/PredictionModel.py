@@ -1,5 +1,6 @@
 from PIL import Image
 from transformers import ViTFeatureExtractor, ViTForImageClassification
+import torch
 
 from Model.ClassRules import ClassRules
 
@@ -11,7 +12,7 @@ class PredictionModel:
         self.m_featureExtractor = ViTFeatureExtractor.from_pretrained('google/vit-base-patch16-224')
         self.m_model = ViTForImageClassification.from_pretrained('google/vit-base-patch16-224')
 
-        #self.m_device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        #self.m_device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         #self.m_model.to(self.m_device)
 
     def computePredictions(self, fileNames):
