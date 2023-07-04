@@ -1,4 +1,5 @@
 from iptcinfo3 import IPTCInfo
+import os
 
 class ImageWriter:
     def writeTagsFromPredictionsInImages(self, predictions):
@@ -14,5 +15,10 @@ class ImageWriter:
             for category in prediction.m_categories:
                 if category not in iptcInfo['keywords']:
                     iptcInfo['keywords'].append(category)
-
-            iptcInfo.save()
+            try:
+                iptcInfo.save()
+                tempFilename = filename + "~"
+                if os.path.exists(tempFilename):
+                    os.remove(tempFilename)
+            except Exception as e:
+                print('Error in file "'+filename+'" : \n\t', e)
