@@ -15,6 +15,8 @@ class MainWindow(QtWidgets.QWidget):
         # UI
         self.m_loadFileButton = QtWidgets.QPushButton("Load files...")
         self.m_classifyImageButton = QtWidgets.QPushButton("Classify images")
+        self.m_writeTagsCheckBox = QtWidgets.QCheckBox("Apply to DNG")
+        self.m_overwriteTagsCheckBox = QtWidgets.QCheckBox("Overwrite tags")
         self.m_writeTagsButton = QtWidgets.QPushButton("Write tags in images")
 
         self.m_fileNamesPlainTextEdit = QtWidgets.QPlainTextEdit("No files loaded...")
@@ -31,8 +33,14 @@ class MainWindow(QtWidgets.QWidget):
         self.layout = QtWidgets.QVBoxLayout(self)
         self.layout.addWidget(self.m_loadFileButton)
         self.layout.addWidget(self.m_fileNamesPlainTextEdit)
-        self.layout.addWidget(self.m_classifyImageButton)
+        self.layout.addWidget(self.m_classifyImageButton)       
         self.layout.addWidget(self.m_resultTable)
+
+        buttonLayout = QtWidgets.QHBoxLayout()
+        buttonLayout.addWidget(self.m_writeTagsCheckBox)
+        buttonLayout.addWidget(self.m_overwriteTagsCheckBox)
+        self.layout.addLayout(buttonLayout)
+
         self.layout.addWidget(self.m_writeTagsButton)
 
         self.m_loadFileButton.clicked.connect(self.onLoadFileButtonClicked)
@@ -59,5 +67,7 @@ class MainWindow(QtWidgets.QWidget):
     @QtCore.Slot()
     def onWriteTagsButtonClicked(self):
         lastPredictions = self.m_predictionModel.getLastPredictions()
-        self.m_imageWriter.writeTagsFromPredictionsInImages(lastPredictions)
+        applyToRaw = self.m_writeTagsCheckBox.isChecked()
+        overwrite = self.m_overwriteTagsCheckBox.isChecked()
+        self.m_imageWriter.writeTagsFromPredictionsInImages(lastPredictions, applyToRaw, overwrite)
         
